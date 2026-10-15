@@ -38,4 +38,14 @@ yarn-error.*
 
 # generated native folders
 /ios
-/android
+
+.env
+
+# Android Studio local state
+.idea/*
+!.idea/gradle.xml
+!.idea/modules.xml
+!.idea/MordixMobile.iml
+!.idea/runConfigurations/
+.idea/runConfigurations/*
+!.idea/runConfigurations/Mordix.xml

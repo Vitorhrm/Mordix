@@ -1,0 +1,33 @@
+import { createClient } from '@supabase/supabase-js';
+import { randomBytes } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import assert from 'node:assert/strict';
+
+// Testa cadastro, login e saída reais sem imprimir senha ou tokens.
+const environment = Object.fromEntries(readFileSync('.env', 'utf8').trim().split(/\r?\n/).map(line => line.split(/=(.*)/s).slice(0, 2)));
+const client = createClient(environment.EXPO_PUBLIC_SUPABASE_URL, environment.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
+const email = `mordix.teste.${Date.now()}@example.com`;
+const password = `${randomBytes(24).toString('base64url')}aA1!`;
+const signup = await client.auth.signUp({ email, password, options: { data: { first_name: 'Teste', last_name: 'Integração Mordix', cpf: '52998224725', academic_test: true } } });
+assert.ifError(signup.error);
+assert.ok(signup.data.session, 'O cadastro deveria permitir entrar sem confirmar e-mail.');
+assert.equal(signup.data.user.user_metadata.first_name, 'Teste');
+assert.equal(signup.data.user.user_metadata.last_name, 'Integração Mordix');
+console.log('PASS: cadastro real com nome, sobrenome e CPF; sessão imediata.');
+assert.ifError((await client.auth.signOut()).error);
+const invalid = await client.auth.signInWithPassword({ email, password: `${password}errada` });
+assert.ok(invalid.error, 'Senha incorreta deve ser rejeitada.');
+console.log('PASS: senha incorreta rejeitada pelo Supabase.');
+const login = await client.auth.signInWithPassword({ email, password });
+assert.ifError(login.error);
+assert.ok(login.data.session);
+const user = await client.auth.getUser();
+assert.ifError(user.error);
+assert.equal(user.data.user.email, email);
+console.log('PASS: login real e leitura do usuário autenticado.');
+assert.ifError((await client.auth.refreshSession()).error);
+console.log('PASS: renovação da sessão.');
+assert.ifError((await client.auth.signOut()).error);
+assert.equal((await client.auth.getSession()).data.session, null);
+console.log('PASS: saída e remoção da sessão.');
+console.log(`Conta de teste acadêmica criada: ${email}`);

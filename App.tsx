@@ -1,20 +1,19 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { AuthProvider } from './src/features/auth/AuthContext';
+import { ShoppingProvider } from './src/features/cart/ShoppingContext';
+import { AppNavigator } from './src/navigation/AppNavigator';
 
+// Reúne autenticação, carrinho e navegação na entrada do aplicativo.
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <ShoppingProvider>
+          <StatusBar style="dark" />
+          <AppNavigator />
+        </ShoppingProvider>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
