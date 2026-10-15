@@ -23,6 +23,8 @@ Abra a pasta completa `MordixMobile` no Android Studio. O Gradle da subpasta `an
 
 O Node.js precisa estar no PATH do processo da IDE. Neste computador ele está no runtime do Codex; se a IDE informar que não encontra `node`, abra-a a partir de um ambiente que tenha Node no PATH ou instale Node.js normalmente.
 
+Copie `.env.example` para `.env` e preencha a URL e a chave pública do seu projeto Supabase antes de executar ou compilar. O `.env` real fica fora do Git.
+
 O arquivo `.env` contém somente a URL e a chave pública do Supabase. Nunca coloque senha do banco, chave secreta ou service role no aplicativo. A senha do usuário é enviada ao Supabase Auth e não é salva pelo aplicativo.
 
 O APK acadêmico utiliza a chave de assinatura de desenvolvimento. Uma publicação futura exigirá chave própria e configuração de distribuição.
